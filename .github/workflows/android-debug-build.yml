@@ -35,6 +35,14 @@ jobs:
           distribution: temurin
           java-version: 11
 
+      - name: Make Condom Gradle executable
+        working-directory: condom
+        run: chmod +x ./gradlew
+
+      - name: Publish Condom to local Maven
+        working-directory: condom
+        run: ./gradlew publishToMavenLocal
+
       - name: Make Gradle executable
         working-directory: island
         run: chmod +x ./gradlew
