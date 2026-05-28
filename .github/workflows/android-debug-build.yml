@@ -1,0 +1,44 @@
+name: Android Debug Build
+
+on:
+  push:
+    branches:
+      - dev
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Island
+        uses: actions/checkout@v4
+        with:
+          path: island
+
+      - name: Checkout deagle
+        uses: actions/checkout@v4
+        with:
+          repository: blackvector76-debug/deagle
+          path: deagle
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Make Gradle executable
+        working-directory: island
+        run: chmod +x ./gradlew
+
+      - name: Build debug APK
+        working-directory: island
+        run: ./gradlew assembleDebug
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: island-debug-apk
+          path: island/app/build/outputs/apk/debug/*.apk
