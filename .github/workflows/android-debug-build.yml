@@ -23,6 +23,12 @@ jobs:
           repository: blackvector76-debug/deagle
           path: deagle
 
+      - name: Checkout condom
+        uses: actions/checkout@v4
+        with:
+          repository: blackvector76-debug/condom
+          path: condom
+
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
