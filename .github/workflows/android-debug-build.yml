@@ -43,6 +43,12 @@ jobs:
         working-directory: condom
         run: ./gradlew publishToMavenLocal
 
+      - name: Set up JDK 11 for Island
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 11
+
       - name: Make Gradle executable
         working-directory: island
         run: chmod +x ./gradlew
