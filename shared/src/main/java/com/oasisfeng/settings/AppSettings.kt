@@ -35,11 +35,19 @@ class AppSettings(context: Context) {
 	fun getLong(option: AppSetting<Long>) = query(option) { it.getLong(0) } !!
 	fun getFloat(option: AppSetting<Float>) = query(option) { it.getFloat(0) } !!
 
-	private fun <T> query(option: AppSetting<T>, getter: (Cursor) -> T?): T? {
-		mAppContext.contentResolver.query(getOptionUri(option), null, null, null, null).use { cursor ->
-			if (cursor != null && cursor.count > 0) return getter(cursor.apply { moveToNext() })
-			return getter(EMPTY_CURSOR_1X1) }
-	}
+        private fun <T> query(option: AppSetting<T>, getter: (Cursor) -> T?): T? {
+                val cursor = mAppContext.contentResolver.query(getOptionUri(option), null, null, null, null)
+                return try {
+                        if (cursor != null && cursor.count > 0) {
+                                cursor.moveToNext()
+                                getter(cursor)
+                        } else {
+                                getter(EMPTY_CURSOR_1X1)
+                        }
+                } finally {
+                        cursor?.close()
+                }
+        }
 
 	/** @return whether this change is accepted */
 	operator fun set(option: AppSetting<String>, value: String?) = set(option, 1, value, false, 0, 0, 0f)
@@ -67,7 +75,8 @@ class AppSettings(context: Context) {
 		mAppContext.contentResolver.registerContentObserver(getOptionUri(option), false, observer)
 	}
 
-	val singleUserRootUri; get(): Uri = Uri.parse("content://0@" + mAppContext.packageName + ".settings")
+        val singleUserRootUri: Uri
+                get() = Uri.parse("content://0@" + mAppContext.packageName + ".settings")
 
 	private fun getOptionUri(option: AppSetting<*>) = getOptionUri(getKey(option), option.isSingleUser)
 	private fun getOptionUri(pref_key: String, singleUser: Boolean) = Uri.parse("content://"
