@@ -36,7 +36,7 @@ class AppSettings(context: Context) {
 	fun getFloat(option: AppSetting<Float>) = query(option) { it.getFloat(0) } !!
 
         private fun <T> query(option: AppSetting<T>, getter: (Cursor) -> T?): T? {
-                val cursor = mAppContext.contentResolver.query(getOptionUri(option), null, null, null, null)
+                val cursor = mAppContext.getContentResolver().query(getOptionUri(option), null, null, null, null)
                 return try {
                         if (cursor != null && cursor.count > 0) {
                                 cursor.moveToNext()
@@ -68,11 +68,11 @@ class AppSettings(context: Context) {
 			3 -> values.put(null, integer)
 			4 -> values.put(null, long_value)
 			5 -> values.put(null, float_value) }
-		return mAppContext.contentResolver.update(getOptionUri(option), values, null, null) > 0
+		return mAppContext.getContentResolver().update(getOptionUri(option), values, null, null) > 0
 	}
 
 	fun registerObserver(option: AppSetting<*>, observer: ContentObserver) {
-		mAppContext.contentResolver.registerContentObserver(getOptionUri(option), false, observer)
+		mAppContext.getContentResolver().registerContentObserver(getOptionUri(option), false, observer)
 	}
 
         val singleUserRootUri: Uri

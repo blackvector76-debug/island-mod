@@ -25,7 +25,7 @@ class ShuttleProvider: ContentProvider() {
 		fun <R> call(context: Context, profile: UserHandle, function: ContextFun<R>): ShuttleResult<R> {
 			val bundle = Bundle(1).apply { putParcelable(null, Closure(function)) }
 			val uri = buildCrossProfileUri(profile.toId())
-			return try { ShuttleResult(context.contentResolver.call(uri, function.javaClass.name, null, bundle)) }
+			return try { ShuttleResult(context.getContentResolver().call(uri, function.javaClass.name, null, bundle)) }
 			catch (e: SecurityException) { @Suppress("UNCHECKED_CAST")
 				if (isReady(context, profile)) throw e else ShuttleResult.NOT_READY as ShuttleResult<R> }
 		}
