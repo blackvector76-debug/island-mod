@@ -23,6 +23,7 @@ import android.os.IBinder
 import android.os.UserHandle
 import android.os.UserManager
 import android.provider.Settings
+import android.widget.Toast
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.oasisfeng.android.widget.Toasts
@@ -111,7 +112,7 @@ import kotlin.coroutines.suspendCoroutine
 				pm.setComponentEnabledSetting(dummyHome, COMPONENT_ENABLED_STATE_DISABLED, DONT_KILL_APP)
 				val user = result.getParcelableExtra<UserHandle>(Intent.EXTRA_USER)
 				Log.i(TAG, "Island is deactivated: ${user?.toId()}")
-				return Toasts.showShort(context, "Island is deactivated.") }
+				return Toast.makeText(context, "Island is deactivated.", Toast.LENGTH_SHORT).show() }
 		}
 
 		private fun makeDefaultHome(home: ComponentName): Boolean {
