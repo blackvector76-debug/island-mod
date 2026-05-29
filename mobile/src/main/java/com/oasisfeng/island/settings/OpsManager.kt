@@ -26,7 +26,9 @@ import kotlinx.coroutines.withContext
 @RequiresApi(P) class OpsManager(private val activity: Activity, private val permission: String, private val op: Int) {
 
 	internal fun startOpsManager(prompt: Int) = GlobalScope.launch(Dispatchers.Main) {
-		val progress = Dialogs.buildProgress(activity, R.string.prompt_appops_loading).indeterminate().onCancel { mCanceled = true }.start()
+		val progress = Dialogs.buildProgress(activity, R.string.prompt_appops_loading).indeterminate()
+                progress.setOnCancelListener { mCanceled = true }
+                progress.start()
 		val apps = buildSortedAppList()
 		if (mCanceled) return@launch
 		progress.dismiss()
@@ -37,7 +39,9 @@ import kotlinx.coroutines.withContext
 
 	private fun show(apps: List<AppInfoWithOps>, prompt: Int) {
 		val checkedItems = BooleanArray(apps.size) { i -> ! apps[i].mRevoked }
-		Dialogs.buildCheckList(activity, activity.getString(prompt), apps.map { it.mLabel }.toTypedArray(), checkedItems) { _, which, checked ->
+		AlertDialog.Builder(activity)
+                        .setTitle(prompt)
+                        .setMultiChoiceItems(apps.map { it.mLabel }.toTypedArray(), checkedItems) { _, which, checked ->
 			apps[which].also { if (checked) it.resetToDefault() else it.revoke() }
 		}.setNeutralButton(R.string.action_revoke_all) { _, _ ->
 			Dialogs.buildAlert(activity, R.string.dialog_title_warning, R.string.prompt_appops_revoke_for_all_users_apps)
@@ -59,7 +63,7 @@ import kotlinx.coroutines.withContext
 		if (mCanceled) return@withContext null
 		apps.forEach {
 			val pkg = it.packageName; val app = it.applicationInfo
-			if (pkg !in entries && Apps.isInstalledInCurrentUser(app) && isUserAppOrUpdatedNonPrivilegeSystemApp(app)
+			if (pkg !in entries && mAppsHelper.isInstalledInCurrentUser(pkg) && isUserAppOrUpdatedNonPrivilegeSystemApp(app)
 					&& (pkg in mOpsRevokedPkgs || it.requestedPermissions?.contains(permission) == true)) {
 				if (mCanceled) return@withContext null
 				entries[pkg] = AppInfoWithOps(app, false) }}
@@ -91,7 +95,7 @@ import kotlinx.coroutines.withContext
 		val pkg: String = info.packageName
 		val mRevoked = mOpsRevokedPkgs.contains(pkg)
 
-		val mSystem = Apps.isSystem(info)
+		val mSystem = (info.flags and FLAG_SYSTEM) != 0
 	}
 
 	private val mAppsHelper = Apps.of(activity)
