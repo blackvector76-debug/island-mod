@@ -42,7 +42,7 @@ class ShuttleProvider: ContentProvider() {
 		}
 
 		private fun buildCrossProfileUri(profileId: Int) =
-				Uri.Builder().scheme(SCHEME_CONTENT).encodedAuthority("$profileId@$AUTHORITY").build()
+				Uri.Builder().scheme("content").encodedAuthority("$profileId@$AUTHORITY").build()
 
 		private const val AUTHORITY = "com.oasisfeng.island.shuttle"
 		const val CONTENT_URI = "content://$AUTHORITY"
