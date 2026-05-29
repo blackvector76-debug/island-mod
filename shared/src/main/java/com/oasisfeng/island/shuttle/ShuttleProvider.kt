@@ -2,7 +2,6 @@ package com.oasisfeng.island.shuttle
 
 import android.app.Activity
 import android.content.*
-import android.content.ContentResolver.SCHEME_CONTENT
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.database.Cursor
 import android.net.Uri
