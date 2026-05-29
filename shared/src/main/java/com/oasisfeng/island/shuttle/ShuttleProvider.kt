@@ -10,6 +10,7 @@ import android.util.Log
 import android.util.Size
 import android.util.SizeF
 import android.util.SparseArray
+import com.oasisfeng.android.content.ContentResolverCompat
 import com.oasisfeng.android.os.UserHandles
 import com.oasisfeng.island.util.OwnerUser
 import com.oasisfeng.island.util.ProfileUser
@@ -25,7 +26,7 @@ class ShuttleProvider: ContentProvider() {
 		fun <R> call(context: Context, profile: UserHandle, function: ContextFun<R>): ShuttleResult<R> {
 			val bundle = Bundle(1).apply { putParcelable(null, Closure(function)) }
 			val uri = buildCrossProfileUri(profile.toId())
-			return try { ShuttleResult(context.getContentResolver().call(uri, function.javaClass.name, null, bundle)) }
+			return try { ShuttleResult(ContentResolverCompat.call(context, uri, function.javaClass.name, null, bundle)) }
 			catch (e: SecurityException) { @Suppress("UNCHECKED_CAST")
 				if (isReady(context, profile)) throw e else ShuttleResult.NOT_READY as ShuttleResult<R> }
 		}
