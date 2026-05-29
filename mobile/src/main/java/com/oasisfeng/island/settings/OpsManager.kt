@@ -1,6 +1,7 @@
 package com.oasisfeng.island.settings
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.AppOpsManager
 import android.content.pm.ApplicationInfo
 import android.content.pm.ApplicationInfo.FLAG_SYSTEM
