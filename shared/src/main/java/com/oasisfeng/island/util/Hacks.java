@@ -139,7 +139,7 @@ public class Hacks {
 			int getMode();
 		}
 
-		@Hack.Fallback(-1) int checkOpNoThrow(int op, int uid, String pkg);
+		int checkOpNoThrow(int op, int uid, String pkg);
 		@RequiresPermission(GET_APP_OPS_STATS) @Nullable List<PackageOps> getOpsForPackage(int uid, String pkg, @Nullable int[] ops);
 		@RequiresPermission(GET_APP_OPS_STATS) @Nullable List<PackageOps> getPackagesForOps(@Nullable int[] ops);
 		void setMode(int code, int uid, String packageName, @Mode int mode);
@@ -147,7 +147,7 @@ public class Hacks {
 		void setRestriction(int code,/* @AttributeUsage */int usage, @Mode int mode, @Nullable String[] exceptionPackages);
 
 		/** Retrieve the default mode for the operation. */
-		@Hack.Fallback(-1) @Mode int opToDefaultMode(final int op);
+		@Mode int opToDefaultMode(final int op);
 		int strOpToOp(String op);
 	}
 
